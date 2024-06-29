@@ -13,12 +13,13 @@ import kotlinx.coroutines.launch
 class ProductViewModel: ViewModel() {
 
     val productStateFlow: MutableStateFlow<List<Product>> = MutableStateFlow(emptyList())
+    val isRefreshingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
     fun fetchProducts() = viewModelScope.launch {
-        delay(2000L)  // 서버로부터 새롭게 데이터 가져온다고 가정
-        productStateFlow.update {
-            getProducts()
-        }
+        isRefreshingFlow.update { true }
+        productStateFlow.update { getProducts() }
+        delay(1_500L)  // 서버로부터 새롭게 데이터 가져온다고 가정
+        isRefreshingFlow.update { false }
     }
 
     companion object {

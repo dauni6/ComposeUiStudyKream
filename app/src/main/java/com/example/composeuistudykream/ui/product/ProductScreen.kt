@@ -48,8 +48,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,7 +56,6 @@ import com.example.composeuistudykream.R
 import com.example.composeuistudykream.model.Product
 import com.example.composeuistudykream.ui.component.PullToRefreshLazyColumn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun ProductScreen(viewModel: ProductViewModel = viewModel()) {
@@ -70,21 +67,16 @@ fun ProductScreen(viewModel: ProductViewModel = viewModel()) {
             ProductTopBar()
         }
     ) { paddingValues ->
-        var isRefreshing by remember { mutableStateOf(false) }
-        val scope = rememberCoroutineScope()
+        val products = viewModel.productStateFlow.collectAsState().value
+        val isRefreshing = viewModel.isRefreshingFlow.collectAsState().value
 
         Box(modifier = Modifier.fillMaxSize()) {
             ScrollableContent(
                 paddingValues = paddingValues,
-                items = viewModel.productStateFlow.collectAsState().value,
+                items = products,
                 isRefreshing = isRefreshing,
                 onRefresh = {
-                    Timber.d("호출 안돼?")
-                    scope.launch {
-                        isRefreshing = true
-                        viewModel.fetchProducts()
-                        isRefreshing = false
-                    }
+                    viewModel.fetchProducts()
                 }
             )
         }
