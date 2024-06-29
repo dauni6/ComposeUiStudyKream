@@ -169,8 +169,9 @@ fun ProductPager() {
 
         HorizontalPager(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp),
+                .fillMaxSize()
+                .height(300.dp)
+                .align(Alignment.Center),
             state = pagerState
         ) {
             val resourceId = productItems[pagerState.currentPage]
@@ -186,7 +187,7 @@ fun ProductPager() {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(start = 12.dp, end = 12.dp, bottom = 80.dp)
+                .padding(start = 12.dp, end = 12.dp, bottom = 40.dp)
         ) {
             repeat(pagerState.pageCount) { iteration ->
                 val color =
