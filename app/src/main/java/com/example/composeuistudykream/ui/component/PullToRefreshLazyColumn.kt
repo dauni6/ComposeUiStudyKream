@@ -23,6 +23,10 @@ import androidx.compose.ui.unit.dp
 fun <T> PullToRefreshLazyColumn(
     modifier: Modifier = Modifier,
     items: List<T>,
+    pagerContent: @Composable () -> Unit,
+    priceContent: @Composable () -> Unit,
+    additionalBenefitContent: @Composable () -> Unit,
+    deliveryInfoContent: @Composable () -> Unit,
     content: @Composable (T) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
@@ -39,6 +43,10 @@ fun <T> PullToRefreshLazyColumn(
             state = lazyListState,
             contentPadding = PaddingValues(8.dp),
         ) {
+            item { pagerContent() }
+            item { priceContent() }
+            item { additionalBenefitContent() }
+            item { deliveryInfoContent() }
             items(items) {
                 content(it)
             }
