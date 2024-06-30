@@ -68,4 +68,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.timber)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.material.icon.extended)
 }

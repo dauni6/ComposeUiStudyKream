@@ -8,6 +8,7 @@ package com.example.composeuistudykream.ui.product
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,15 +32,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,8 +58,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composeuistudykream.R
 import com.example.composeuistudykream.model.Product
+import com.example.composeuistudykream.model.ProductInfoTabItem
 import com.example.composeuistudykream.ui.component.PullToRefreshLazyColumn
-import kotlinx.coroutines.launch
 
 @Composable
 fun ProductScreen(viewModel: ProductViewModel = viewModel()) {
@@ -121,7 +125,6 @@ fun ProductTopBar() {
     )
 }
 
-
 @Composable
 fun ScrollableContent(
     paddingValues: PaddingValues,
@@ -136,6 +139,7 @@ fun ScrollableContent(
         priceContent = { ProductPriceContent() },
         additionalBenefitContent = { ProductAdditionalBenefitContent() },
         deliveryInfoContent = { ProductDeliveryInfoContent() },
+        productInfoRowTabContent = { ProductInfoContent() },
         content = { product ->
 
         },
@@ -446,4 +450,46 @@ fun ProductDeliveryInfoContent() {
         }
 
     }
+}
+
+@Composable
+fun ProductInfoContent() {
+    val tabItems = listOf(
+        ProductInfoTabItem(title = "시세"),
+        ProductInfoTabItem(title = "상세정보"),
+        ProductInfoTabItem(title = "사이즈"),
+        ProductInfoTabItem(title = "스타일"),
+        ProductInfoTabItem(title = "추천"),
+    )
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        TabRow(
+            selectedTabIndex = selectedTabIndex,
+            indicator = { tabPositions ->
+                TabRowDefaults.SecondaryIndicator(
+                    modifier = Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex]),
+                    color = Color.Black
+                )
+            }
+        ) {
+            tabItems.forEachIndexed { index, item ->
+                Tab(
+                    selected = index == selectedTabIndex,
+                    selectedContentColor = Color.Black,
+                    unselectedContentColor = Color.Black,
+                    onClick = { selectedTabIndex = index },
+                    text = {
+                        Text(
+                            text = item.title,
+                            fontSize = 10.sp,
+                            color = Color.Black,
+                        )
+                    }
+                )
+            }
+        }
+    }
+
 }

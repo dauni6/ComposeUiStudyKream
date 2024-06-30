@@ -1,5 +1,6 @@
 package com.example.composeuistudykream.ui.component
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 
+@ExperimentalFoundationApi
 @ExperimentalMaterial3Api
 @Composable
 fun <T> PullToRefreshLazyColumn(
@@ -27,6 +29,7 @@ fun <T> PullToRefreshLazyColumn(
     priceContent: @Composable () -> Unit,
     additionalBenefitContent: @Composable () -> Unit,
     deliveryInfoContent: @Composable () -> Unit,
+    productInfoRowTabContent: @Composable () -> Unit,
     content: @Composable (T) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
@@ -47,9 +50,16 @@ fun <T> PullToRefreshLazyColumn(
             item { priceContent() }
             item { additionalBenefitContent() }
             item { deliveryInfoContent() }
+            stickyHeader { productInfoRowTabContent() }
             items(items) {
                 content(it)
             }
+            // 아래 5개의 아이템은 테스트를 위해 넣었음(삭제할 것!)
+            item { deliveryInfoContent() }
+            item { deliveryInfoContent() }
+            item { deliveryInfoContent() }
+            item { deliveryInfoContent() }
+            item { deliveryInfoContent() }
         }
 
         if (pullToRefreshState.isRefreshing) {
