@@ -5,32 +5,48 @@
 
 package com.example.composeuistudykream.ui.product
 
+import android.util.Log
+import android.widget.Space
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material3.BottomAppBarDefaults
+import androidx.compose.material3.BottomAppBarState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -39,6 +55,7 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,10 +67,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.composeuistudykream.R
@@ -67,22 +95,31 @@ fun ProductScreen(viewModel: ProductViewModel = viewModel()) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
+        contentWindowInsets = WindowInsets.navigationBars,
         topBar = {
             ProductTopBar()
+        },
+        bottomBar = {
+            ProductPurchaseOrSellBar()
         }
-    ) { paddingValues ->
+    ) { innerPadding ->
         val products = viewModel.productStateFlow.collectAsState().value
         val isRefreshing = viewModel.isRefreshingFlow.collectAsState().value
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color.White)
+        ) {
             ScrollableContent(
-                paddingValues = paddingValues,
+                paddingValues = innerPadding,
                 items = products,
                 isRefreshing = isRefreshing,
                 onRefresh = {
                     viewModel.fetchProducts()
                 }
             )
+
         }
     }
 }
@@ -473,6 +510,7 @@ fun ProductInfoContent() {
                     color = Color.Black
                 )
             }
+            , containerColor = Color.White
         ) {
             tabItems.forEachIndexed { index, item ->
                 Tab(
@@ -492,4 +530,153 @@ fun ProductInfoContent() {
         }
     }
 
+}
+
+@Composable
+fun ProductPurchaseOrSellBar() {
+
+    Box(
+        modifier = Modifier.padding(
+            bottom = BottomAppBarDefaults.windowInsets.asPaddingValues().calculateBottomPadding()
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .background(color = Color.White)
+                .padding(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_bookmark_border_24),
+                    contentDescription = "북마크"
+                )
+                Text(
+                    text = "21.6만",
+                    fontSize = 12.sp,
+                    color = Color.Black,
+                )
+            }
+
+            Spacer(modifier = Modifier.size(10.dp))
+
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(
+                        color = Color.Red
+                            .darker()
+                            .copy(0.6f)
+                    )
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+            ) {
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = "구매",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                VerticalDivider(
+                    color = Color.Gray
+                )
+                // 아래의 방식으로 사용중인데 lineHeight는 특정 값을 줘야하기 때문에 해상도 맞추기 까다로우니 그냥
+                // Column 만들고 가격과 문자를 Text로 만들어서 세로정렬시키는게 낫겠다. 근데 지금은 연습이니 여러가지로 해본다.
+                Text(text = buildAnnotatedString {
+                    withStyle(
+                        ParagraphStyle(
+                            lineHeight = 10.sp,  // 이 값을 조정하여 원하는 줄 간격을 설정
+                            lineBreak = LineBreak.Paragraph.copy(strictness = LineBreak.Strictness.Default),
+                        )
+                    ) {
+                        withStyle(
+                            SpanStyle(
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        ) {
+                            append("119,000\n")
+                        }
+                        withStyle(
+                            SpanStyle(
+                                fontSize = 8.sp,
+                                color = Color.LightGray
+                            )
+                        ) {
+                            append("즉시 구매가")
+                        }
+                    }
+                })
+            }
+
+            Spacer(modifier = Modifier.size(6.dp))
+
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(
+                        color = Color.Green
+                            .darker()
+                            .copy(0.6f)
+                    )
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+            ) {
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = "판매",
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                VerticalDivider(
+                    color = Color.Gray
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            SpanStyle(
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        ) {
+                            append("150,000\n")
+                        }
+                        withStyle(
+                            SpanStyle(
+                                fontSize = 8.sp,
+                                color = Color.LightGray
+                            )
+                        ) {
+                            append("즉시 판매가")
+                        }
+                    },
+                    lineHeight = 10.sp
+                )
+            }
+        }
+
+    }
+
+}
+
+fun Color.darker(factor: Float = 0.7f): Color {
+    return Color(
+        red = (red * factor).coerceIn(0f, 1f),
+        green = (green * factor).coerceIn(0f, 1f),
+        blue = (blue * factor).coerceIn(0f, 1f),
+        alpha = alpha
+    )
 }
