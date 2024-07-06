@@ -15,8 +15,14 @@ class ProductViewModel: ViewModel() {
     val productStateFlow: MutableStateFlow<List<Product>> = MutableStateFlow(emptyList())
     val isRefreshingFlow: MutableStateFlow<Boolean> = MutableStateFlow(false)
 
-    fun fetchProducts() = viewModelScope.launch {
-        isRefreshingFlow.update { true }
+    init {
+        fetchProducts(true)
+    }
+
+    fun fetchProducts(isFirstCall: Boolean = false) = viewModelScope.launch {
+        if (isFirstCall.not()) {
+            isRefreshingFlow.update { true }
+        }
         productStateFlow.update { getProducts() }
         delay(1_500L)  // 서버로부터 새롭게 데이터 가져온다고 가정
         isRefreshingFlow.update { false }
@@ -61,7 +67,112 @@ class ProductViewModel: ViewModel() {
                             additionalInfo = "",
                         ),
                     )
-                )
+                ),
+                Product(
+                    immediatePurchasePrice = 117000,
+                    englishName = "Nike Air Force 1 '07 Low white",
+                    koreanName = "나이키 에어포스 1 '07 로우 화이트",
+                    additionalBenefits = AdditionalBenefit(
+                        point = "계좌 간편결제 시 1% 적립",
+                        payment = "우리카드 KREAM카드 최대 5% 청구할인 외 4건" // 이 부분을 span으로 바로 처리 될 수 있도록 할 순 없을까?
+                    ),
+                    deliveryInfo = listOf(
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                    )
+                ),
+                Product(
+                    immediatePurchasePrice = 117000,
+                    englishName = "Nike Air Force 1 '07 Low white",
+                    koreanName = "나이키 에어포스 1 '07 로우 화이트",
+                    additionalBenefits = AdditionalBenefit(
+                        point = "계좌 간편결제 시 1% 적립",
+                        payment = "우리카드 KREAM카드 최대 5% 청구할인 외 4건" // 이 부분을 span으로 바로 처리 될 수 있도록 할 순 없을까?
+                    ),
+                    deliveryInfo = listOf(
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                    )
+                ),
+                Product(
+                    immediatePurchasePrice = 117000,
+                    englishName = "Nike Air Force 1 '07 Low white",
+                    koreanName = "나이키 에어포스 1 '07 로우 화이트",
+                    additionalBenefits = AdditionalBenefit(
+                        point = "계좌 간편결제 시 1% 적립",
+                        payment = "우리카드 KREAM카드 최대 5% 청구할인 외 4건" // 이 부분을 span으로 바로 처리 될 수 있도록 할 순 없을까?
+                    ),
+                    deliveryInfo = listOf(
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                        DeliveryInfo(
+                            title = "",
+                            mainInfo = "",
+                            subInfo = "",
+                            additionalInfo = "",
+                        ),
+                    )
+                ),
             )
         }
 

@@ -18,17 +18,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
@@ -68,6 +63,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.ParagraphStyle
@@ -75,7 +71,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineBreak
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
@@ -88,6 +86,7 @@ import com.example.composeuistudykream.ui.component.PullToRefreshLazyColumn
 import com.example.composeuistudykream.ui.component.RoundedIndicator
 import com.example.composeuistudykream.ui.component.roundedTabIndicatorOffset
 import com.example.composeuistudykream.ui.theme.darker
+import timber.log.Timber
 
 @Composable
 fun ProductScreen(viewModel: ProductViewModel = viewModel()) {
@@ -111,6 +110,7 @@ fun ProductScreen(viewModel: ProductViewModel = viewModel()) {
                 .fillMaxSize()
                 .background(color = Color.White)
         ) {
+            Timber.d("items size = > ${products.size}")
             ScrollableContent(
                 paddingValues = innerPadding,
                 items = products,
@@ -193,9 +193,8 @@ fun ScrollableContent(
             )
             ProductStyleContent(dogImages)
         },
-        recommendationContent = { ProductRecommendationContent() },
-        content = { product ->
-
+        recommendationContent = { products ->
+            ProductRow(products)
         },
         isRefreshing = isRefreshing,
         onRefresh = onRefresh
@@ -938,31 +937,76 @@ fun Cell(
 fun ProductStyleContent(
     images: List<Int>
 ) {
-    LazyVerticalGrid(
-        modifier = Modifier.height(400.dp), // 여기 고정값이 중요
-        columns = GridCells.Fixed(3),
-        contentPadding = PaddingValues(4.dp)
+    CustomImageGrid(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        item(span = { GridItemSpan(3) }) {
-            Image(
-                painter = painterResource(id = images[0]),
-                contentDescription = null,
-                modifier = Modifier
-                    .aspectRatio(2f)
-                    .fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
+        // 첫 번째 큰 이미지
+        Image(
+            painter = painterResource(id = images.first()),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        // 나머지 작은 이미지들
+        images.forEachIndexed { index, image ->
+            if (index != 0) {
+                Image(
+                    painter = painterResource(id = image),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CustomImageGrid(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit
+) {
+    Layout(
+        content = content,
+        modifier = modifier
+    ) { measurables, constraints ->
+        // 첫 번째 아이템은 전체 너비의 절반을 차지
+        val firstItemWidth = constraints.maxWidth / 2
+        val firstItemHeight = firstItemWidth * 1 // 2:1 비율
+
+        // 나머지 아이템들은 전체 너비의 1/4을 차지
+        val itemSize = constraints.maxWidth / 4
+
+        val placeables = measurables.mapIndexed { index, measurable ->
+            val itemConstraints = if (index == 0) {
+                Constraints.fixed(firstItemWidth, firstItemHeight)
+            } else {
+                Constraints.fixed(itemSize, itemSize)
+            }
+            measurable.measure(itemConstraints)
         }
 
-        items(images.drop(1)) { imageResId ->
-            Image(
-                painter = painterResource(id = imageResId),
-                contentDescription = null,
-                modifier = Modifier
-                    .aspectRatio(1f)
-                    .fillMaxWidth(),
-                contentScale = ContentScale.Crop
-            )
+        // 레이아웃 높이 계산
+        val height = firstItemHeight + (placeables.size - 1 + 3) / 4 * itemSize
+
+        layout(constraints.maxWidth, height) {
+            var yPosition = 0
+            var xPosition = firstItemWidth
+
+            placeables.forEachIndexed { index, placeable ->
+                if (index == 0) {
+                    placeable.place(0, 0)
+                    yPosition = firstItemHeight
+                } else {
+                    placeable.place(xPosition, yPosition)
+                    xPosition += itemSize
+                    if (xPosition >= constraints.maxWidth) {
+                        xPosition = 0
+                        yPosition += itemSize
+                    }
+                }
+            }
         }
     }
 }
@@ -1111,6 +1155,79 @@ fun ProductPurchaseOrSellBar() {
             }
         }
 
+    }
+
+}
+
+@Composable
+fun ProductRow(products: List<Product>) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+    ) {
+        ProductItem(
+            modifier = Modifier.weight(1f),
+            product = products.first()
+        )
+        Spacer(modifier = Modifier.size(4.dp))
+        ProductItem(
+            modifier = Modifier.weight(1f),
+            product = products.last()
+        )
+    }
+}
+
+@Composable
+fun ProductItem(
+    modifier: Modifier = Modifier,
+    product: Product
+) {
+    Column(
+        modifier = modifier.fillMaxWidth()
+    ) {
+        // 신발 영역
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Image(
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(id = R.drawable.nike_air_force1_07_low_white_1), contentDescription = "신발"
+            )
+            Text(
+                modifier = Modifier.align(alignment = Alignment.TopEnd),
+                text = "거래 287",
+                fontSize = 7.sp,
+                color = Color.Black,
+            )
+        }
+
+        Text(
+            text = "Nike",
+            fontSize = 8.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold,
+        )
+        Text(
+            text = product.englishName,
+            fontSize = 8.sp,
+            color = Color.Black,
+            maxLines = 2,
+        )
+        Text(
+            text = product.koreanName,
+            fontSize = 8.sp,
+            color = Color.LightGray,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Text(
+            text = product.immediatePurchasePrice.toString(),
+            fontSize = 9.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+        )
     }
 
 }

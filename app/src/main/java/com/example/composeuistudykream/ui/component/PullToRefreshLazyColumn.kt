@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
@@ -33,8 +34,7 @@ fun <T> PullToRefreshLazyColumn(
     marketPriceVariationContent: @Composable () -> Unit,
     productSizeContent: @Composable () -> Unit,
     productStyleContent: @Composable () -> Unit,
-    recommendationContent: @Composable () -> Unit,
-    content: @Composable (T) -> Unit,
+    recommendationContent: @Composable (List<T>) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     lazyListState: LazyListState = rememberLazyListState(),
@@ -58,9 +58,8 @@ fun <T> PullToRefreshLazyColumn(
             item { marketPriceVariationContent() }
             item { productSizeContent() }
             item { productStyleContent() }
-            item { recommendationContent() }
-            items(items) {
-                content(it)
+            items(items.chunked(2)) { pair ->
+                recommendationContent(pair)
             }
         }
 
