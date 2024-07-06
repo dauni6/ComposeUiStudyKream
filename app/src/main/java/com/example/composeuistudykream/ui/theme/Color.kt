@@ -12,3 +12,13 @@ val Pink40 = Color(0xFF7D5260)
 
 val Gray40 = Color(0xFFD7D7D7)
 val Gray80 = Color(0xFF312D2D)
+
+
+fun Color.darker(factor: Float = 0.7f): Color {
+    return Color(
+        red = (red * factor).coerceIn(0f, 1f),
+        green = (green * factor).coerceIn(0f, 1f),
+        blue = (blue * factor).coerceIn(0f, 1f),
+        alpha = alpha
+    )
+}

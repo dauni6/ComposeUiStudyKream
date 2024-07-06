@@ -30,6 +30,10 @@ fun <T> PullToRefreshLazyColumn(
     additionalBenefitContent: @Composable () -> Unit,
     deliveryInfoContent: @Composable () -> Unit,
     productInfoRowTabContent: @Composable () -> Unit,
+    marketPriceVariationContent: @Composable () -> Unit,
+    productSizeContent: @Composable () -> Unit,
+    productStyleContent: @Composable () -> Unit,
+    recommendationContent: @Composable () -> Unit,
     content: @Composable (T) -> Unit,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
@@ -55,7 +59,7 @@ fun <T> PullToRefreshLazyColumn(
                 content(it)
             }
             // 아래 5개의 아이템은 테스트를 위해 넣었음(삭제할 것!)
-            item { deliveryInfoContent() }
+            item { marketPriceVariationContent() }
             item { deliveryInfoContent() }
             item { deliveryInfoContent() }
             item { deliveryInfoContent() }
