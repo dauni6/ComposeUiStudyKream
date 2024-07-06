@@ -8,22 +8,30 @@ package com.example.composeuistudykream.ui.product
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,6 +41,7 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -79,7 +88,6 @@ import com.example.composeuistudykream.ui.component.PullToRefreshLazyColumn
 import com.example.composeuistudykream.ui.component.RoundedIndicator
 import com.example.composeuistudykream.ui.component.roundedTabIndicatorOffset
 import com.example.composeuistudykream.ui.theme.darker
-import timber.log.Timber
 
 @Composable
 fun ProductScreen(viewModel: ProductViewModel = viewModel()) {
@@ -171,7 +179,20 @@ fun ScrollableContent(
         productInfoRowTabContent = { ProductInfoContent() },
         marketPriceVariationContent = { ProductMarketPriceVariationContent() },
         productSizeContent = { ProductSizeContent() },
-        productStyleContent = { ProductStyleContent() },
+        productStyleContent = {
+            val dogImages = listOf(
+                R.drawable.dog1,
+                R.drawable.dog2,
+                R.drawable.dog3,
+                R.drawable.dog4,
+                R.drawable.dog5,
+                R.drawable.dog6,
+                R.drawable.dog7,
+                R.drawable.dog8,
+                R.drawable.dog9,
+            )
+            ProductStyleContent(dogImages)
+        },
         recommendationContent = { ProductRecommendationContent() },
         content = { product ->
 
@@ -705,12 +726,245 @@ fun PurchaseBiddingTabContent() {
 
 @Composable
 fun ProductSizeContent() {
+    Column(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "사이즈 정보",
+            fontSize = 14.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold,
+        )
 
+        Spacer(modifier = Modifier.size(8.dp))
+
+        val tableData = listOf(
+            listOf(
+                "KR",
+                "225",
+                "230",
+                "235",
+                "240",
+                "245",
+                "250",
+                "255",
+                "260",
+                "265",
+                "270",
+                "275",
+                "280",
+                "285",
+                "290"
+            ),
+            listOf(
+                "US (M)",
+                "9.5",
+                "10",
+                "10.5",
+                "11",
+                "11.5",
+                "12",
+                "12.5",
+                "13",
+                "13.5",
+                "14",
+                "14.5",
+                "15",
+                "15.5",
+                "16"
+            ),
+            listOf(
+                "US (W)",
+                "11",
+                "11.5",
+                "12",
+                "12.5",
+                "13",
+                "13.5",
+                "14",
+                "14.5",
+                "15",
+                "15.5",
+                "16",
+                "16.5",
+                "17",
+                "17.5"
+            ),
+            listOf(
+                "UK",
+                "11",
+                "11.5",
+                "12",
+                "12.5",
+                "13",
+                "13.5",
+                "14",
+                "14.5",
+                "15",
+                "15.5",
+                "16",
+                "16.5",
+                "17",
+                "17.5"
+            ),
+            listOf(
+                "JP",
+                "11",
+                "11.5",
+                "12",
+                "12.5",
+                "13",
+                "13.5",
+                "14",
+                "14.5",
+                "15",
+                "15.5",
+                "16",
+                "16.5",
+                "17",
+                "17.5"
+            ),
+            listOf(
+                "EU",
+                "11",
+                "11.5",
+                "12",
+                "12.5",
+                "13",
+                "13.5",
+                "14",
+                "14.5",
+                "15",
+                "15.5",
+                "16",
+                "16.5",
+                "17",
+                "17.5"
+            ),
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ) {
+            ScrollableTableWithFixedColumn(tableData)
+        }
+    }
 }
 
 @Composable
-fun ProductStyleContent() {
+fun ScrollableTableWithFixedColumn(data: List<List<String>>) {
+    val scrollState = rememberScrollState()
 
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(IntrinsicSize.Min)  // 내용에 맞춰 높이 조정
+            .background(Color.White)
+    ) {
+        // 첫 번째 열 (고정)
+        Column {
+            data.forEach { row ->
+                FirstColumnCell(text = row.first())
+            }
+        }
+
+        // 나머지 열 (스크롤 가능)
+        Row(
+            modifier = Modifier.horizontalScroll(scrollState)
+        ) {
+            for (colIndex in 1 until data[0].size) {
+                Column {
+                    data.forEachIndexed { index, row ->
+                        Cell(text = row[colIndex], index == 0)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FirstColumnCell(
+    text: String,
+) {
+    Box(
+        modifier = Modifier
+            .size(width = 100.dp, height = 40.dp)
+            .background(Color.LightGray.copy(alpha = 0.1f)),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            fontSize = 8.sp,
+            color = Color.Black,
+        )
+        HorizontalDivider(
+            modifier = Modifier
+                .height(0.5.dp)
+                .align(Alignment.BottomEnd),
+            color = Color.LightGray.copy(0.3f),
+        )
+    }
+}
+
+@Composable
+fun Cell(
+    text: String,
+    isBackgroundColor: Boolean,
+) {
+    Box(
+        modifier = Modifier
+            .size(width = 100.dp, height = 40.dp)
+            .background(if (isBackgroundColor) Color.LightGray.copy(alpha = 0.1f) else Color.White),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            fontSize = 8.sp,
+            color = Color.Black,
+        )
+        HorizontalDivider(
+            modifier = Modifier
+                .height(0.5.dp)
+                .align(Alignment.BottomEnd),
+            color = Color.LightGray.copy(0.3f),
+        )
+    }
+}
+
+@Composable
+fun ProductStyleContent(
+    images: List<Int>
+) {
+    LazyVerticalGrid(
+        modifier = Modifier.height(400.dp), // 여기 고정값이 중요
+        columns = GridCells.Fixed(3),
+        contentPadding = PaddingValues(4.dp)
+    ) {
+        item(span = { GridItemSpan(3) }) {
+            Image(
+                painter = painterResource(id = images[0]),
+                contentDescription = null,
+                modifier = Modifier
+                    .aspectRatio(2f)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        items(images.drop(1)) { imageResId ->
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = null,
+                modifier = Modifier
+                    .aspectRatio(1f)
+                    .fillMaxWidth(),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
 }
 
 @Composable
@@ -774,34 +1028,36 @@ fun ProductPurchaseOrSellBar() {
                 VerticalDivider(
                     color = Color.Gray
                 )
+                Spacer(modifier = Modifier.size(6.dp))
                 // 아래의 방식으로 사용중인데 lineHeight는 특정 값을 줘야하기 때문에 해상도 맞추기 까다로우니 그냥
                 // Column 만들고 가격과 문자를 Text로 만들어서 세로정렬시키는게 낫겠다. 근데 지금은 연습이니 여러가지로 해본다.
-                Text(text = buildAnnotatedString {
-                    withStyle(
-                        ParagraphStyle(
-                            lineHeight = 10.sp,  // 이 값을 조정하여 원하는 줄 간격을 설정
-                            lineBreak = LineBreak.Paragraph.copy(strictness = LineBreak.Strictness.Default),
-                        )
-                    ) {
+                Text(
+                    text = buildAnnotatedString {
                         withStyle(
-                            SpanStyle(
-                                fontSize = 10.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color.White
+                            ParagraphStyle(
+                                lineHeight = 10.sp,  // 이 값을 조정하여 원하는 줄 간격을 설정
+                                lineBreak = LineBreak.Paragraph.copy(strictness = LineBreak.Strictness.Default),
                             )
                         ) {
-                            append("119,000\n")
+                            withStyle(
+                                SpanStyle(
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            ) {
+                                append("119,000\n")
+                            }
+                            withStyle(
+                                SpanStyle(
+                                    fontSize = 8.sp,
+                                    color = Color.LightGray
+                                )
+                            ) {
+                                append("즉시 구매가")
+                            }
                         }
-                        withStyle(
-                            SpanStyle(
-                                fontSize = 8.sp,
-                                color = Color.LightGray
-                            )
-                        ) {
-                            append("즉시 구매가")
-                        }
-                    }
-                })
+                    })
             }
 
             Spacer(modifier = Modifier.size(6.dp))
@@ -829,6 +1085,7 @@ fun ProductPurchaseOrSellBar() {
                 VerticalDivider(
                     color = Color.Gray
                 )
+                Spacer(modifier = Modifier.size(6.dp))
                 Text(
                     text = buildAnnotatedString {
                         withStyle(

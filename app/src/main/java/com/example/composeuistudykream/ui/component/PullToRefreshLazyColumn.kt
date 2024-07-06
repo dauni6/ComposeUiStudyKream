@@ -55,15 +55,13 @@ fun <T> PullToRefreshLazyColumn(
             item { additionalBenefitContent() }
             item { deliveryInfoContent() }
             stickyHeader { productInfoRowTabContent() }
+            item { marketPriceVariationContent() }
+            item { productSizeContent() }
+            item { productStyleContent() }
+            item { recommendationContent() }
             items(items) {
                 content(it)
             }
-            // 아래 5개의 아이템은 테스트를 위해 넣었음(삭제할 것!)
-            item { marketPriceVariationContent() }
-            item { deliveryInfoContent() }
-            item { deliveryInfoContent() }
-            item { deliveryInfoContent() }
-            item { deliveryInfoContent() }
         }
 
         if (pullToRefreshState.isRefreshing) {
