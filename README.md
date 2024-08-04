@@ -6,18 +6,15 @@
 ### 필수 구현 사항
 
 1. **pull to refresh**
-    
-    ![6.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/77b546a0-28bf-4c01-9c82-d655c7d3c0c9/7d0886fb-a171-495f-8add-6c170c36ca0f/6.png)
-    
+![pull_to_refresh](https://github.com/user-attachments/assets/a7446977-4d1d-4cd6-a18e-9e877686d7ae)
+   
 2. 큰 상품 이미지 좌우 스크롤/인디케이터
-    
-    ![1.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/77b546a0-28bf-4c01-9c82-d655c7d3c0c9/4d6de739-2728-4e64-add6-37a8e2053783/1.png)
-    
+![indicator](https://github.com/user-attachments/assets/a4a1070c-67d9-41bc-a6ea-1ae60cf5bdf3)
+
 3. 스티키 헤더
-4. ![2.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/77b546a0-28bf-4c01-9c82-d655c7d3c0c9/5cd0a836-4aa4-4f85-be40-c6665a968f97/2.png)
+![stickeyheader1](https://github.com/user-attachments/assets/128fa479-0cc5-4b18-90eb-453f4993b9f4)
+![stickeyheader2](https://github.com/user-attachments/assets/96ab9d4c-c520-49d1-9d86-28e12ccb7787)
 
-![3.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/77b546a0-28bf-4c01-9c82-d655c7d3c0c9/919e6e5d-dba8-48d4-85d0-8b14ec4597ce/3.png)
 
-![4.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/77b546a0-28bf-4c01-9c82-d655c7d3c0c9/88659ed7-a03a-4f6a-977e-43507da3a1fa/4.png)
-
-![5.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/77b546a0-28bf-4c01-9c82-d655c7d3c0c9/200fc3f2-7c12-4e10-9f9d-e2904778fcbc/5.png)
+4. 바텀 시트 다이얼로그
+![bottomsheetdialog](https://github.com/user-attachments/assets/21be670a-e790-44b2-81a5-d3200085db02)
